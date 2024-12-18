@@ -23,10 +23,10 @@ import Link from 'next/link'
             
             <main className="text-center">
               <h1 className="text-6xl font-bold mb-6">
-                Learn Anything, <span className="text-primary">Anywhere</span>
+                Create Your <span className="text-primary">Teaching Experience</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto">
-                Connect with expert tutors worldwide and unlock your full potential through personalized online learning experiences.
+                This platform is designed for tutors to create their own teaching experience. Teachers will be independent and manage themselves.
               </p>
               <div className="space-x-4">
                 <Link href="/auth/register">
