@@ -7,14 +7,14 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import type { Session } from "@/types/session"
-import type { Lesson } from "@/types/lesson"
+import { Material } from "@/types/material"
 
 interface SessionCardProps {
   session: Session;
-  lesson: Lesson;
+  material: Material;
 }
 
-export function SessionCard({ session, lesson }: SessionCardProps) {
+export function SessionCard({ session, material }: SessionCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -26,7 +26,7 @@ export function SessionCard({ session, lesson }: SessionCardProps) {
           <Video className="h-8 w-8" />
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold">{lesson.name}</h3>
+              <h3 className="font-semibold">{material.name}</h3>
               <Badge
                 variant={session.status === 'scheduled' ? 'default' : 'secondary'}
               >
@@ -42,7 +42,7 @@ export function SessionCard({ session, lesson }: SessionCardProps) {
         <CardContent>
           <div className="space-y-4">
             <div>
-              <Badge variant="outline">{lesson.level}</Badge>
+              <Badge variant="outline">{material.level}</Badge>
             </div>
             <Button
               variant="outline"

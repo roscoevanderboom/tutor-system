@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "@/contexts/session-context"
+import { useUserContext } from "@/contexts/user-context"
 import { CalendarIcon, Check } from "lucide-react"
 import { format } from "date-fns"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -9,19 +11,17 @@ import { Calendar } from "@/components/ui/calendar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import type { Lesson } from "@/types/lesson"
 import type { Session } from "@/types/session"
 import { generateMeetingUrl } from "@/types/session"
 
-interface BookSessionDialogProps {
-  lessons: Lesson[];
-  onBookSession: (session: Session) => void;
-}
+interface BookSessionDialogProps {}
 
-export function BookSessionDialog({ lessons, onBookSession }: BookSessionDialogProps) {
+export function BookSessionDialog({}: BookSessionDialogProps) {
+  const { state: userState } = useUserContext()
+  const { addSession } = useSession()
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState<Date>()
-  const [selectedLesson, setSelectedLesson] = useState<string>()
+  const [selectedMaterial, setSelectedMaterial] = useState<string>()
   const [selectedTime, setSelectedTime] = useState<string>()
 
   const timeSlots = [
@@ -31,7 +31,7 @@ export function BookSessionDialog({ lessons, onBookSession }: BookSessionDialogP
   ]
 
   const handleSubmit = () => {
-    if (!date || !selectedLesson || !selectedTime) return
+    if (!date || !selectedMaterial || !selectedTime) return
 
     const [hours, minutes] = selectedTime.split(":").map(Number)
     const dateTime = new Date(date)
@@ -39,20 +39,20 @@ export function BookSessionDialog({ lessons, onBookSession }: BookSessionDialogP
 
     const session: Session = {
       id: crypto.randomUUID(),
-      lessonId: selectedLesson,
+      materialId: selectedMaterial, // Note: You might want to update the Session type to use materialId instead
       dateTime,
       meetingUrl: generateMeetingUrl(),
       status: 'scheduled'
     }
 
-    onBookSession(session)
+    addSession(session)
     setOpen(false)
     resetForm()
   }
 
   const resetForm = () => {
     setDate(undefined)
-    setSelectedLesson(undefined)
+    setSelectedMaterial(undefined)
     setSelectedTime(undefined)
   }
 
@@ -67,15 +67,15 @@ export function BookSessionDialog({ lessons, onBookSession }: BookSessionDialogP
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Select Lesson</label>
-            <Select value={selectedLesson} onValueChange={setSelectedLesson}>
+            <label className="text-sm font-medium">Select Material</label>
+            <Select value={selectedMaterial} onValueChange={setSelectedMaterial}>
               <SelectTrigger>
-                <SelectValue placeholder="Choose a lesson" />
+                <SelectValue placeholder="Choose a material" />
               </SelectTrigger>
               <SelectContent>
-                {lessons.map((lesson) => (
-                  <SelectItem key={lesson.id} value={lesson.id}>
-                    {lesson.name}
+                {userState.materials.map((material) => (
+                  <SelectItem key={material.id} value={material.id}>
+                    {material.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -131,7 +131,7 @@ export function BookSessionDialog({ lessons, onBookSession }: BookSessionDialogP
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={!date || !selectedLesson || !selectedTime}
+            disabled={!date || !selectedMaterial || !selectedTime}
           >
             Book Session
           </Button>

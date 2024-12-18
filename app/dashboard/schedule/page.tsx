@@ -1,33 +1,28 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar } from "@/components/ui/calendar"
 import { BookSessionDialog } from "@/components/sessions/book-session-dialog"
 import { SessionCard } from "@/components/sessions/session-card"
-import type { Session } from "@/types/session"
-import type { Lesson } from "@/types/lesson"
+import { useSession } from "@/contexts/session-context"
+import { useUserContext } from "@/contexts/user-context"
 
 export default function SchedulePage() {
-  const [sessions, setSessions] = useState<Session[]>([])
-  const [lessons] = useState<Lesson[]>([])
+  const { state: { sessions } } = useSession()
+  const { state: { materials } } = useUserContext()
 
-  const handleBookSession = (newSession: Session) => {
-    setSessions([...sessions, newSession])
-  }
-
-  const getLesson = (lessonId: string) => {
-    return lessons.find(lesson => lesson.id === lessonId)
+  const getMaterial = (materialId: string) => {
+    return materials.find(material => material.id === materialId) || null
   }
 
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Schedule</h1>
-        <BookSessionDialog lessons={lessons} onBookSession={handleBookSession} />
+        <BookSessionDialog />
       </div>
       
-      <div className="grid gap-8 md:grid-cols-[300px_1fr]">
+      <div className="grid gap-8 md:grid-cols-[335px_1fr]">
         <Card>
           <CardHeader>
             <CardTitle>Calendar</CardTitle>
@@ -52,13 +47,14 @@ export default function SchedulePage() {
                   .filter(session => session.status === 'scheduled')
                   .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
                   .map((session) => {
-                    const lesson = getLesson(session.lessonId)
-                    if (!lesson) return null
+                    const material = getMaterial(session.materialId)
+                    console.log(material)
+                    if(!material) return null;
                     return (
                       <SessionCard
                         key={session.id}
                         session={session}
-                        lesson={lesson}
+                        material={material}
                       />
                     )
                   })

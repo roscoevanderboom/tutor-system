@@ -3,22 +3,18 @@
 import { useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { AddLessonDialog } from "@/components/lessons/add-lesson-dialog"
-import { LessonCard } from "@/components/lessons/lesson-card"
-import type { Lesson } from "@/types/lesson"
+import { AddLessonDialog } from "@/components/materials/add-material-dialog"
+import { MaterialCard } from "@/components/materials/material-card"
+import { useUserContext } from "@/contexts/user-context"
 
 export default function MaterialsPage() {
-  const [lessons, setLessons] = useState<Lesson[]>([])
+  const { state, addMaterial } = useUserContext()
   const [searchQuery, setSearchQuery] = useState("")
 
-  const handleAddLesson = (newLesson: Lesson) => {
-    setLessons([newLesson, ...lessons])
-  }
-
-  const filteredLessons = lessons.filter(lesson => 
-    lesson.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    lesson.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    lesson.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredmaterials = state.materials.filter(material => 
+    material.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    material.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    material.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
   )
 
   return (
@@ -35,21 +31,21 @@ export default function MaterialsPage() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <AddLessonDialog onAddLesson={handleAddLesson} />
+          <AddLessonDialog addMaterial={addMaterial} />
         </div>
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredLessons.length > 0 ? (
-          filteredLessons.map((lesson) => (
-            <LessonCard key={lesson.id} lesson={lesson} />
+        {filteredmaterials.length > 0 ? (
+          filteredmaterials.map((material) => (
+            <MaterialCard key={material.id} material={material} />
           ))
         ) : (
           <div className="md:col-span-2 lg:col-span-3 text-center py-12">
             <p className="text-muted-foreground">
               {searchQuery
-                ? "No lessons found matching your search."
-                : "No lessons added yet. Click 'Add Lesson' to create your first lesson."}
+                ? "No materials found matching your search."
+                : "No materials added yet. Click 'Add material' to create your first material."}
             </p>
           </div>
         )}

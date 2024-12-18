@@ -1,6 +1,6 @@
 export interface Session {
   id: string;
-  lessonId: string;
+  materialId: string; // Changed from lessonId
   dateTime: Date;
   meetingUrl: string;
   status: 'scheduled' | 'completed' | 'cancelled';
