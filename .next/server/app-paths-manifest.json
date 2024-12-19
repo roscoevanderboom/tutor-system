@@ -1,7 +1,9 @@
 {
-  "/onboarding/page": "app/onboarding/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
   "/auth/register/page": "app/auth/register/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/dashboard/materials/page": "app/dashboard/materials/page.js",
   "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/schedule/page": "app/dashboard/schedule/page.js",
-  "/dashboard/materials/page": "app/dashboard/materials/page.js"
+  "/dashboard/materials/[materialId]/page": "app/dashboard/materials/[materialId]/page.js",
+  "/dashboard/profile/page": "app/dashboard/profile/page.js"
 }

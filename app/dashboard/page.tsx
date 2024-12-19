@@ -1,12 +1,22 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Calendar, Users, BookOpen, Clock } from "lucide-react"
+"use client";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Calendar, Users, BookOpen, Clock } from "lucide-react";
+import { useUserContext } from "@/contexts/user-context";
+import { useSession } from "@/contexts/session-context";
+import Link from "next/link";
 
 export default function DashboardPage() {
+  const { state: userState } = useUserContext();
+  const { state: sessionState } = useSession();
+
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold">Welcome back, John!</h1>
-      
+      <h1 className="text-3xl font-bold">
+        Welcome back, {userState.user?.name || "User"}!
+      </h1>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -14,7 +24,7 @@ export default function DashboardPage() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
+            <div className="text-2xl font-bold">{sessionState.sessions.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -32,7 +42,7 @@ export default function DashboardPage() {
             <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8</div>
+            <div className="text-2xl font-bold">{userState.materials.length}</div>
           </CardContent>
         </Card>
         <Card>
@@ -52,8 +62,12 @@ export default function DashboardPage() {
             <CardTitle>Upcoming Sessions</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">No upcoming sessions scheduled.</p>
-            <Button className="mt-4">Book a Session</Button>
+            <p className="text-sm text-muted-foreground">
+              No upcoming sessions scheduled.
+            </p>
+            <Link href="/dashboard/schedule">
+              <Button className="mt-4" >Book a Session</Button>
+            </Link>
           </CardContent>
         </Card>
         <Card>
@@ -62,10 +76,18 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">No materials available.</p>
-            <Button className="mt-4" variant="outline">Browse Materials</Button>
+            <Link href="/dashboard/materials">
+              <Button
+                className="mt-4"
+                variant="outline"
+              >
+                Browse Materials
+              </Button>
+            </Link>
+
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }
